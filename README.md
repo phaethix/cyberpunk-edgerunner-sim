@@ -71,21 +71,6 @@ graph TD
     Router -- JSON response --> Browser
 ```
 
-### Directory Structure
-
-```
-cyberpunk-edgerunner-sim/
-├── server/
-│   └── main.py              # FastAPI app: routes, GameState, game logic
-├── web/
-│   ├── index.html            # SPA shell (game data injected at startup)
-│   ├── style.css             # Cyberpunk theme: Tailwind + custom CSS
-│   └── app.js                # Vanilla JS: state, API, rendering, tabs
-├── requirements.txt           # Python dependencies
-├── .gitignore
-└── README.md
-```
-
 ### Tech Stack
 
 | Layer | Technology |
@@ -112,7 +97,7 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 # Start the server
-python server/main.py
+python -m server.main
 ```
 
 ### Access
