@@ -1,3 +1,12 @@
+---
+title: Cyberpunk Edgerunner Sim
+emoji: ⚡
+colorFrom: cyand
+colorTo: purple
+sdk: docker
+pinned: false
+---
+
 # Cyberpunk: Edge-Runner Simulator
 
 A cyberpunk-themed single-player RPG, ported from a terminal text adventure to a web-based single-page application (SPA).
