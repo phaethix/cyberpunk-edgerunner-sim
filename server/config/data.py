@@ -1,0 +1,123 @@
+#!/usr/bin/env python3
+"""Game data definitions.
+
+This module contains all static game data including cyberware items, job definitions,
+and other game content.
+"""
+from typing import Any
+
+# Cyberware shop items
+CYBERWARE: dict[str, dict[str, Any]] = {
+    "optic_zoom": {
+        "name": "Optical Zoom Implants",
+        "price": 800,
+        "combat_bonus": 5,
+        "description": "Enhanced vision for precision targeting.",
+    },
+    "subdermal_armor": {
+        "name": "Subdermal Armor Weave",
+        "price": 1500,
+        "combat_bonus": 10,
+        "description": "Reinforced under-skin plating for damage resistance.",
+    },
+    "neural_boost": {
+        "name": "Neural Processing Unit",
+        "price": 2200,
+        "combat_bonus": 15,
+        "description": "Cognitive overclock for faster reaction times.",
+    },
+    "synth_muscle": {
+        "name": "Synth-Muscle Fibers",
+        "price": 1800,
+        "combat_bonus": 12,
+        "description": "Artificial fibers for superhuman strength.",
+    },
+    "combat_reflex_tank": {
+        "name": "Combat Reflex Tank",
+        "price": 3500,
+        "combat_bonus": 20,
+        "description": "Emergency adrenal boost system for burst combat speed.",
+    },
+    "chrome_skull": {
+        "name": "Chrome Skull Plate",
+        "price": 4000,
+        "combat_bonus": 25,
+        "description": "Titanium-reinforced cranial housing.",
+    },
+}
+
+# Available gigs
+JOBS: list[dict[str, Any]] = [
+    {
+        "id": "courier_run",
+        "name": "Courier Run",
+        "base_difficulty": 15,
+        "reward_range": (100, 300),
+        "humanity_cost": (1, 3),
+        "risk_level": "low",
+        "description": "Deliver a package across the city. Simple, fast, low risk.",
+    },
+    {
+        "id": "street_brawl",
+        "name": "Street Brawl Enforcer",
+        "base_difficulty": 25,
+        "reward_range": (200, 500),
+        "humanity_cost": (5, 12),
+        "risk_level": "low",
+        "description": "Beat the competition in an underground fighting ring.",
+    },
+    {
+        "id": "runner_escort",
+        "name": "Runner Escort",
+        "base_difficulty": 30,
+        "reward_range": (400, 900),
+        "humanity_cost": (2, 5),
+        "risk_level": "low",
+        "description": "Safely escort a fixer through hostile gang territory.",
+    },
+    {
+        "id": "data_heist",
+        "name": "Data Heist",
+        "base_difficulty": 40,
+        "reward_range": (600, 1200),
+        "humanity_cost": (3, 7),
+        "risk_level": "medium",
+        "description": "Break into a corporate data vault and extract encrypted files.",
+    },
+    {
+        "id": "gang_cleanup",
+        "name": "Gang War Cleanup",
+        "base_difficulty": 45,
+        "reward_range": (700, 1800),
+        "humanity_cost": (5, 10),
+        "risk_level": "medium",
+        "description": "Clean up territory disputes between warring street gangs.",
+    },
+    {
+        "id": "black_market_sabotage",
+        "name": "Black Market Sabotage",
+        "base_difficulty": 50,
+        "reward_range": (1000, 2500),
+        "humanity_cost": (6, 14),
+        "risk_level": "high",
+        "description": "Destroy a rival dealer's shipment before it moves.",
+    },
+    {
+        "id": "corporate_espionage",
+        "name": "Corporate Espionage",
+        "base_difficulty": 55,
+        "reward_range": (1500, 3000),
+        "humanity_cost": (8, 15),
+        "risk_level": "high",
+        "description": "Infiltrate a rival corp's R&D lab and steal schematics.",
+    },
+    {
+        "id": "cyberpsych_hunt",
+        "name": "Cyberpsych Hunt",
+        "base_difficulty": 70,
+        "reward_range": (3000, 5000),
+        "humanity_cost": (10, 20),
+        "risk_level": "extreme",
+        "description": "Track down and neutralize a rogue cyberpsycho before they hurt innocents.",
+    },
+]
