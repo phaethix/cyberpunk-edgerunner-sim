@@ -149,7 +149,8 @@
             </div>
             <p style="color:#777;font-size:0.75rem;line-height:1.5;margin:0 0 16px;">Full HP restore + 10-20% humanity
               recovery. The gold standard of corpo medical service.</p>
-            <button class="btn btn-pink" onclick="Actions.heal()" style="width:100%;">Call Trauma Team</button>
+            <button id="heal-btn" class="btn btn-pink" onclick="Actions.heal(this)" style="width:100%;">Call Trauma
+              Team</button>
           </div>
           <div class="glass-card" style="padding:20px;text-align:center;">
             <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:#666;margin-bottom:6px;">
@@ -158,7 +159,7 @@
             </div>
             <p style="color:#777;font-size:0.75rem;line-height:1.5;margin:0 0 16px;">A quiet night at the netrunner den.
               5-12% humanity recovery. No HP restoration.</p>
-            <button class="btn btn-blue" onclick="Actions.rest()" style="width:100%;">Rest</button>
+            <button id="rest-btn" class="btn btn-blue" onclick="Actions.rest(this)" style="width:100%;">Rest</button>
           </div>
         </div>
       </section>
@@ -170,8 +171,8 @@
   <div id="notification-modal" class="hidden"></div>
 
   <script>
-    window.GAME_JOBS = {{JOBS_JSON}};
-    window.GAME_CYBERWARE = {{CW_JSON}};
+    window.GAME_JOBS = {{ JOBS_JSON }};
+    window.GAME_CYBERWARE = {{ CW_JSON }};
   </script>
   <script src="/static/app.js"></script>
 </body>

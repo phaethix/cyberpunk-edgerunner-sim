@@ -58,75 +58,75 @@ const API = {
 
 // ── Actions (button handlers) ──────────────────────────────────
 const Actions = {
-  async executeJob(jobId) {
-    const btn = event.target;
+  async executeJob(jobId, btn) {
     btn.disabled = true;
     btn.textContent = 'RUNNING...';
     try {
       const result = await API.executeJob(jobId);
       showModal(result);
-      State.set(result.state);
+      if (result.state) State.set(result.state);
     } catch (e) {
       showNotification('Connection Error', e.message, 'error');
+    } finally {
+      btn.disabled = State.get()?.game_over || false;
+      btn.textContent = 'EXECUTE';
     }
-    btn.disabled = false;
-    btn.textContent = 'EXECUTE';
   },
 
-  async buy(id) {
-    const btn = event.target;
+  async buy(id, btn) {
     btn.disabled = true;
     try {
       const result = await API.buy(id);
       showModal(result);
-      State.set(result.state);
+      if (result.state) State.set(result.state);
     } catch (e) {
       showNotification('Connection Error', e.message, 'error');
+    } finally {
+      btn.disabled = State.get()?.game_over || false;
     }
-    btn.disabled = false;
   },
 
-  async uninstall(id) {
-    const btn = event.target;
+  async uninstall(id, btn) {
     btn.disabled = true;
     try {
       const result = await API.uninstall(id);
       showModal(result);
-      State.set(result.state);
+      if (result.state) State.set(result.state);
     } catch (e) {
       showNotification('Connection Error', e.message, 'error');
+    } finally {
+      btn.disabled = State.get()?.game_over || false;
     }
-    btn.disabled = false;
   },
 
-  async heal() {
-    const btn = event.target;
+  async heal(btn) {
     btn.disabled = true;
     btn.textContent = 'CALLING...';
     try {
       const result = await API.heal();
       showModal(result);
-      State.set(result.state);
+      if (result.state) State.set(result.state);
     } catch (e) {
       showNotification('Connection Error', e.message, 'error');
+    } finally {
+      btn.disabled = State.get()?.game_over || false;
+      btn.textContent = 'Call Trauma Team';
     }
-    btn.disabled = false;
-    btn.textContent = 'CALL TRAUMA TEAM';
   },
 
-  async rest() {
-    const btn = event.target;
+  async rest(btn) {
     btn.disabled = true;
     btn.textContent = 'RESTING...';
     try {
       const result = await API.rest();
       showModal(result);
-      State.set(result.state);
+      if (result.state) State.set(result.state);
     } catch (e) {
       showNotification('Connection Error', e.message, 'error');
+    } finally {
+      btn.disabled = State.get()?.game_over || false;
+      btn.textContent = 'Rest';
     }
-    btn.disabled = false;
-    btn.textContent = 'REST';
   },
 
   async restart() {
@@ -193,7 +193,7 @@ function renderGigs(s) {
   container.innerHTML = window.GAME_JOBS.map(j => {
     const riskClass = 'risk-' + j.risk_level;
     const effectiveDiff = Math.max(5, j.base_difficulty - s.combat_bonus);
-    const successChance = clamp(15, 90, 50 + s.combat_bonus * 2 - j.base_difficulty / 2);
+    const successChance = clamp(15, 90, 50 + s.combat_bonus * 2 - Math.floor(j.base_difficulty / 2));
     return `<div class="gig-card ${riskClass}">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:8px;">
         <div>
@@ -207,7 +207,7 @@ function renderGigs(s) {
         </div>
         <div style="text-align:right;">
           <div style="font-size:0.75rem;color:#888;margin-bottom:4px;">$${j.reward_range[0].toLocaleString()}-$${j.reward_range[1].toLocaleString()}</div>
-          <button class="btn btn-pink" onclick="Actions.executeJob('${j.id}')" ${s.game_over ? 'disabled' : ''}>EXECUTE</button>
+          <button class="btn btn-pink" onclick="Actions.executeJob('${j.id}', this)" ${s.game_over ? 'disabled' : ''}>EXECUTE</button>
         </div>
       </div>
     </div>`;
@@ -233,9 +233,9 @@ function renderShop(s) {
     }
     let btns = '';
     if (owned) {
-      btns = `<button class="btn btn-blue" onclick="Actions.uninstall('${uid}')" ${s.game_over ? 'disabled' : ''}>UNINSTALL</button>`;
+      btns = `<button class="btn btn-blue" onclick="Actions.uninstall('${uid}', this)" ${s.game_over ? 'disabled' : ''}>UNINSTALL</button>`;
     } else {
-      btns = `<button class="btn btn-green" onclick="Actions.buy('${uid}')" ${s.game_over || !canBuy ? 'disabled' : ''}>BUY $${item.price.toLocaleString()}</button>`;
+      btns = `<button class="btn btn-green" onclick="Actions.buy('${uid}', this)" ${s.game_over || !canBuy ? 'disabled' : ''}>BUY $${item.price.toLocaleString()}</button>`;
     }
     return `<div class="${classes}">
       <div>
@@ -253,7 +253,8 @@ function renderShop(s) {
 
 // ── Trauma Team ────────────────────────────────────────────────
 function renderTrauma(s) {
-  // Buttons are disabled inline in the render templates
+  document.getElementById('heal-btn').disabled = s.game_over;
+  document.getElementById('rest-btn').disabled = s.game_over;
 }
 
 // ── Tab Switching ──────────────────────────────────────────────
@@ -289,15 +290,16 @@ function hideGameOver() {
 }
 
 // ── Notification Modal ─────────────────────────────────────────
-function showNotification(title, body, type) {
+function showNotification(title, body, type, isHtml = false) {
   const modal = document.getElementById('notification-modal');
   const boxClass = type === 'success' ? 'success' : type === 'error' ? 'error' : 'info';
   const titleColor = type === 'success' ? 'var(--green)' : type === 'error' ? '#f87171' : 'var(--blue)';
+  const safeBody = isHtml ? body : esc(body);
   modal.innerHTML = `
     <div class="modal-backdrop" onclick="this.remove()">
       <div class="modal-box ${boxClass}" onclick="event.stopPropagation()">
         <h3 style="color:${titleColor};margin:0 0 12px;font-size:1rem;letter-spacing:1px;text-transform:uppercase;">${esc(title)}</h3>
-        <p style="color:#bbb;margin:0 0 20px;font-size:0.85rem;line-height:1.6;">${esc(body)}</p>
+        <div style="color:#bbb;margin:0 0 20px;font-size:0.85rem;line-height:1.6;">${safeBody}</div>
         <button class="btn ${boxClass === 'success' ? 'btn-green' : boxClass === 'error' ? 'btn-pink' : 'btn-blue'}" onclick="this.closest('.modal-backdrop').remove()" style="width:100%;">ACK</button>
       </div>
     </div>
@@ -319,7 +321,7 @@ function showModal(result) {
       body += `<p style="margin:0 0 4px;">Lost <span style="color:#f87171;">$${job.loss.toLocaleString()}</span> | Humanity: <span style="color:#f87171;">-${job.humanity_cost}%</span> | HP: <span style="color:#f87171;">-${job.hp_cost}</span></p>`;
       body += `<p style="color:#555;">Roll: ${job.roll} | Chance: ${job.success_chance}% | Risk: ${job.risk_level}</p>`;
     }
-    showNotification(result.message, body, type);
+    showNotification(result.message, body, type, true);
     return;
   }
   // Non-job actions (buy, sell, heal, rest)
