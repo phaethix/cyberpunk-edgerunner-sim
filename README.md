@@ -1,7 +1,7 @@
 ---
 title: Cyberpunk Edgerunner Sim
 emoji: ⚡
-colorFrom: cyand
+colorFrom: blue
 colorTo: purple
 sdk: docker
 pinned: false
