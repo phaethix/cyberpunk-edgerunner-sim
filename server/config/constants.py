@@ -1,4 +1,4 @@
-""#!/usr/bin/env python3
+#!/usr/bin/env python3
 """Game constants and configuration.
 
 This module contains all constant values used throughout the application,
