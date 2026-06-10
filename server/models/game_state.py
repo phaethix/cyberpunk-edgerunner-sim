@@ -82,6 +82,16 @@ class GameState:
                 "a ghost in the machine, forever hunting."
             )
 
+    def _game_over_response(self) -> dict[str, Any] | None:
+        """Return a failure response if the current session has already ended."""
+        if not self._game_over:
+            return None
+        return {
+            "success": False,
+            "message": self._game_over_reason or "Game over. Start a new game to continue.",
+            "state": self.status_dict(),
+        }
+
     # Player actions
 
     def buy(self, uid: str) -> dict[str, Any]:
@@ -92,17 +102,21 @@ class GameState:
             ``state`` (or just ``success``/``message`` on failure).
         """
         if uid not in CYBERWARE:
-            return {"success": False, "message": f"Unknown cyberware: '{uid}'."}
+            return {"success": False, "message": f"Unknown cyberware: '{uid}'.", "state": self.status_dict()}
+
+        if response := self._game_over_response():
+            return response
 
         item = CYBERWARE[uid]
 
         if uid in [x[0] for x in self.owned]:
-            return {"success": False, "message": f"You already have {item['name']} installed."}
+            return {"success": False, "message": f"You already have {item['name']} installed.", "state": self.status_dict()}
 
         if self.money < item["price"]:
             return {
                 "success": False,
                 "message": f"Not enough eddies. Need ${item['price']:,}, have ${self.money:,}.",
+                "state": self.status_dict(),
             }
 
         # Apply purchase
@@ -133,12 +147,16 @@ class GameState:
             A result dict with ``success``, ``message``, and updated ``state``.
         """
         if uid not in CYBERWARE:
-            return {"success": False, "message": f"Unknown cyberware: '{uid}'."}
+            return {"success": False, "message": f"Unknown cyberware: '{uid}'.", "state": self.status_dict()}
+
+        if response := self._game_over_response():
+            return response
 
         if uid not in [x[0] for x in self.owned]:
             return {
                 "success": False,
                 "message": f"You don't have {CYBERWARE[uid]['name']} installed.",
+                "state": self.status_dict(),
             }
 
         item = CYBERWARE[uid]
@@ -167,12 +185,15 @@ class GameState:
             job_id: Unique identifier from the ``JOBS`` list.
 
         Returns:
-            A result dict with the outcome, job result details, and
-            the updated ``state``.
+            A result dict with ``success``, ``message``, and the current
+            ``state``. Successful job runs also include ``job_result``.
         """
         job = next((j for j in JOBS if j["id"] == job_id), None)
         if not job:
-            return {"success": False, "message": f"Unknown gig ID: '{job_id}'."}
+            return {"success": False, "message": f"Unknown gig ID: '{job_id}'.", "state": self.status_dict()}
+
+        if response := self._game_over_response():
+            return response
 
         self.day += 1
         diff = job["base_difficulty"]
@@ -238,6 +259,9 @@ class GameState:
 
         Restores HP to full and recovers 10-20% humanity.
         """
+        if response := self._game_over_response():
+            return response
+
         if self.money < HEAL_COST:
             return {
                 "success": False,
@@ -245,10 +269,11 @@ class GameState:
                     f"Trauma Team costs ${HEAL_COST:,} for emergency extraction. "
                     f"You only have ${self.money:,}."
                 ),
+                "state": self.status_dict(),
             }
 
         if self.humanity >= 100.0 and self.hp >= 100:
-            return {"success": False, "message": "You're already at full health."}
+            return {"success": False, "message": "You're already at full health.", "state": self.status_dict()}
 
         self.money -= HEAL_COST
         recovery_h = random.randint(10, 20)
@@ -271,6 +296,9 @@ class GameState:
 
         Does not restore HP.
         """
+        if response := self._game_over_response():
+            return response
+
         if self.money < REST_COST:
             return {
                 "success": False,
@@ -278,10 +306,11 @@ class GameState:
                     f"A night at the safehouse costs ${REST_COST:,}, "
                     f"but you only have ${self.money:,}."
                 ),
+                "state": self.status_dict(),
             }
 
         if self.humanity >= 100.0:
-            return {"success": False, "message": "Your humanity is already at maximum."}
+            return {"success": False, "message": "Your humanity is already at maximum.", "state": self.status_dict()}
 
         self.money -= REST_COST
         self.day += 1
