@@ -47,13 +47,13 @@ const API = {
     return r.json();
   },
 
-  async status()       { return this.get('/api/status'); },
+  async status() { return this.get('/api/status'); },
   async executeJob(id) { return this.post('/api/gig', { id }); },
-  async buy(id)        { return this.post('/api/buy', { id }); },
-  async uninstall(id)  { return this.post('/api/uninstall', { id }); },
-  async heal()         { return this.post('/api/heal', {}); },
-  async rest()         { return this.post('/api/rest', {}); },
-  async restart()      { return this.post('/api/restart', {}); },
+  async buy(id) { return this.post('/api/buy', { id }); },
+  async uninstall(id) { return this.post('/api/uninstall', { id }); },
+  async heal() { return this.post('/api/heal', {}); },
+  async rest() { return this.post('/api/rest', {}); },
+  async restart() { return this.post('/api/restart', {}); },
 };
 
 // ── Actions (button handlers) ──────────────────────────────────
@@ -127,6 +127,15 @@ const Actions = {
     }
     btn.disabled = false;
     btn.textContent = 'REST';
+  },
+
+  async restart() {
+    try {
+      const s = await API.restart();
+      State.set(s);
+    } catch (e) {
+      showNotification('Connection Error', e.message, 'error');
+    }
   },
 };
 
