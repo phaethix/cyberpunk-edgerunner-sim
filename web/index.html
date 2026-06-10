@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyberpunk: Edge-Runner Simulator</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- ════ Cinematic Opening Overlay ════ -->
+<div id="cinematic-overlay" class="overlay cinematic-overlay">
+  <pre class="glow-pink" style="color:var(--pink);font-size:clamp(10px,2vw,18px);text-align:center;line-height:1.2;margin:0 0 16px;white-space:pre;">
+  ██████╗ ██╗     ██╗███╗   ██╗████████╗███████╗██████╗
+ ██╔═══██╗██║     ██║████╗  ██║╚══██╔══╝██╔════╝██╔══██╗
+ ██║   ██║██║     ██║██╔██╗ ██║   ██║   █████╗  ██████╔╝
+ ██║   ██║██║     ██║██║╚██╗██║   ██║   ██╔══╝  ██╔══██╗
+ ╚██████╔╝███████╗██║██║ ╚████║   ██║   ███████╗██║  ██║
+  ╚═════╝ ╚══════╝╚═╝╚═╝  ╚═══╝   ╚═╝   ╚══════╝╚═╝  ╚═╝
+
+       E D G E   R U N N E R S
+  </pre>
+  <p class="glow-blue" style="color:var(--blue);font-size:1.1rem;letter-spacing:2px;">Live fast. Modify everything. Don't lose yourself.</p>
+  <p class="pulse" style="color:#555;font-size:0.8rem;margin-top:24px;">Entering Night City<span class="blink">_</span></p>
+</div>
+
+<!-- ════ Game Over Overlay ════ -->
+<div id="gameover-overlay" class="overlay gameover-overlay hidden">
+  <pre class="glow-pink" style="color:#ff0044;font-size:clamp(10px,2vw,16px);text-align:center;line-height:1.15;margin:0 0 24px;white-space:pre;">
+ ╔══════════════════════════════════════════════════╗
+ ║                                                  ║
+ ║   ██████╗ ██████╗  █████╗ ██████╗ ██╗   ██╗     ║
+ ║   ██╔══██╗██╔══██╗██╔══██╗██╔══██╗██║   ██║     ║
+ ║   ██████╔╝██████╔╝███████║██║  ██║██║   ██║     ║
+ ║   ██╔═══╝  ██╔══██╗██╔══██║██║  ██║██║   ██║     ║
+ ║   ██║      ██║  ██║██║  ██║██████╔╝╚██████╔╝     ║
+ ║   ╚═╝      ╚═╝  ╚═╝╚═╝  ╚═╝╚═════╝  ╚═════╝     ║
+ ║                                                  ║
+ ║                G A M E   O V E R                 ║
+ ║                                                  ║
+ ╚══════════════════════════════════════════════════╝
+  </pre>
+  <p id="gameover-reason" class="glow-pink" style="color:#ff0044;font-size:0.95rem;max-width:500px;text-align:center;line-height:1.6;margin:0 0 28px;"></p>
+  <div id="gameover-stats" style="color:#888;font-size:0.85rem;line-height:2;margin:0 0 32px;text-align:center;"></div>
+  <button id="restart-btn" class="btn btn-pink" onclick="API.restart()">New Game</button>
+</div>
+
+<!-- ════ Main UI ════ -->
+<div id="main-ui" style="max-width:900px;margin:0 auto;padding:0 16px 40px;">
+
+  <!-- HUD Header -->
+  <header class="glass" style="padding:12px 24px;margin:20px 0 0;border-radius:8px 8px 0 0;display:flex;flex-wrap:wrap;gap:24px;align-items:center;">
+    <span id="hud-money" class="glow-pink" style="color:var(--pink);font-size:0.85rem;font-weight:700;"></span>
+    <span id="hud-hp" style="color:var(--green);font-size:0.8rem;font-weight:600;"></span>
+    <span id="hud-humanity" style="font-size:0.8rem;font-weight:600;"></span>
+    <span id="hud-combat" class="glow-green" style="color:var(--green);font-size:0.8rem;font-weight:600;"></span>
+    <span id="hud-day" style="color:#555;font-size:0.75rem;margin-left:auto;"></span>
+  </header>
+
+  <!-- Tab Navigation -->
+  <nav class="glass" style="padding:0 8px;border-radius:0;overflow-x:auto;display:flex;gap:0;">
+    <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+    <button class="tab-btn" data-tab="gigs">Fixer Market</button>
+    <button class="tab-btn" data-tab="clinic">Ripperdoc</button>
+    <button class="tab-btn" data-tab="trauma">Trauma Team</button>
+  </nav>
+
+  <!-- Tab Panels Container -->
+  <main style="padding:20px 0;">
+
+    <!-- ── Dashboard ── -->
+    <section id="panel-dashboard" class="tab-panel">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+        <!-- HP Card -->
+        <div class="glass-card" style="padding:18px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:#666;">HP</span>
+            <span id="dash-hp-val" style="font-size:0.85rem;font-weight:700;"></span>
+          </div>
+          <div class="bar-bg"><div id="dash-hp-bar" class="bar-fill"></div></div>
+        </div>
+        <!-- Humanity Card -->
+        <div class="glass-card" style="padding:18px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:#666;">Humanity</span>
+            <span id="dash-humanity-val" style="font-size:0.85rem;font-weight:700;"></span>
+          </div>
+          <div class="bar-bg"><div id="dash-humanity-bar" class="bar-fill"></div></div>
+        </div>
+        <!-- Money Card -->
+        <div class="glass-card" style="padding:18px;">
+          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:#666;margin-bottom:4px;">Eddies</div>
+          <div id="dash-money" class="glow-pink" style="color:var(--pink);font-size:1.6rem;font-weight:700;"></div>
+        </div>
+        <!-- Combat Bonus -->
+        <div class="glass-card" style="padding:18px;">
+          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:#666;margin-bottom:4px;">Combat Bonus</div>
+          <div id="dash-combat" class="glow-green" style="color:var(--green);font-size:1.6rem;font-weight:700;"></div>
+        </div>
+      </div>
+
+      <!-- Cyberware list -->
+      <div class="glass-card" style="padding:18px;">
+        <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:#666;margin-bottom:12px;">Installed Cyberware</div>
+        <div id="dash-cyberware"></div>
+      </div>
+    </section>
+
+    <!-- ── Fixer Market ── -->
+    <section id="panel-gigs" class="tab-panel hidden">
+      <h2 style="color:var(--blue);font-size:1rem;letter-spacing:2px;margin:0 0 16px;" class="glow-blue">AVAILABLE GIGS</h2>
+      <div id="gig-list"></div>
+    </section>
+
+    <!-- ── Ripperdoc Clinic ── -->
+    <section id="panel-clinic" class="tab-panel hidden">
+      <h2 style="color:var(--green);font-size:1rem;letter-spacing:2px;margin:0 0 16px;" class="glow-green">RIPPERDOC CLINIC</h2>
+      <div id="shop-list"></div>
+    </section>
+
+    <!-- ── Trauma Team ── -->
+    <section id="panel-trauma" class="tab-panel hidden">
+      <h2 style="color:var(--pink);font-size:1rem;letter-spacing:2px;margin:0 0 16px;" class="glow-pink">TRAUMA TEAM</h2>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div class="glass-card" style="padding:20px;text-align:center;">
+          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:#666;margin-bottom:6px;">Emergency Extraction</div>
+          <div class="glow-pink" style="color:var(--pink);font-size:1.3rem;font-weight:700;margin-bottom:8px;">$500</div>
+          <p style="color:#777;font-size:0.75rem;line-height:1.5;margin:0 0 16px;">Full HP restore + 10-20% humanity recovery. The gold standard of corpo medical service.</p>
+          <button class="btn btn-pink" onclick="Actions.heal()" style="width:100%;">Call Trauma Team</button>
+        </div>
+        <div class="glass-card" style="padding:20px;text-align:center;">
+          <div style="font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:#666;margin-bottom:6px;">Safehouse Rest</div>
+          <div class="glow-blue" style="color:var(--blue);font-size:1.3rem;font-weight:700;margin-bottom:8px;">$150</div>
+          <p style="color:#777;font-size:0.75rem;line-height:1.5;margin:0 0 16px;">A quiet night at the netrunner den. 5-12% humanity recovery. No HP restoration.</p>
+          <button class="btn btn-blue" onclick="Actions.rest()" style="width:100%;">Rest</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ════ Notification Modal ════ -->
+<div id="notification-modal" class="hidden"></div>
+
+<script>
+  window.GAME_JOBS = {{JOBS_JSON}};
+  window.GAME_CYBERWARE = {{CW_JSON}};
+</script>
+<script src="/static/app.js"></script>
+</body>
+</html>
