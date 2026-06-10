@@ -198,7 +198,7 @@ class GameState:
         self.day += 1
         diff = job["base_difficulty"]
         effective_diff = max(5, diff - self.combat_bonus)
-        success_chance = clamp(15, 90, 50 + self.combat_bonus * 2 - diff // 2)
+        success_chance = clamp(15, 90, 50 + self.combat_bonus * 2 - effective_diff // 2)
 
         roll = random.randint(1, 100)
         success = roll <= success_chance
@@ -227,10 +227,10 @@ class GameState:
                 },
             }
 
-        # Failure
-        loss = random.randint(100, 400)
-        h_loss = random.randint(3, 8)
-        hp_loss = random.randint(5, 15)
+        # Failure — penalties scale with job risk level
+        loss = random.randint(*job["failure_money_range"])
+        h_loss = random.randint(*job["failure_hum_range"])
+        hp_loss = random.randint(*job["failure_hp_range"])
         self.money = max(0, self.money - loss)
         self.humanity = max(0.0, self.humanity - h_loss)
         self.hp = max(0, self.hp - hp_loss)
@@ -278,7 +278,7 @@ class GameState:
         self.money -= HEAL_COST
         recovery_h = random.randint(10, 20)
         self.humanity = min(100.0, self.humanity + recovery_h)
-        self.hp = min(100, self.hp + 100 - self.hp)
+        self.hp = 100
         self._check_game_over()
 
         return {

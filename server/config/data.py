@@ -56,6 +56,9 @@ JOBS: list[dict[str, Any]] = [
         "humanity_cost": (1, 3),
         "risk_level": "low",
         "description": "Deliver a package across the city. Simple, fast, low risk.",
+        "failure_money_range": (50, 200),
+        "failure_hp_range": (3, 8),
+        "failure_hum_range": (2, 5),
     },
     {
         "id": "street_brawl",
@@ -65,6 +68,9 @@ JOBS: list[dict[str, Any]] = [
         "humanity_cost": (5, 12),
         "risk_level": "low",
         "description": "Beat the competition in an underground fighting ring.",
+        "failure_money_range": (50, 200),
+        "failure_hp_range": (3, 8),
+        "failure_hum_range": (2, 5),
     },
     {
         "id": "runner_escort",
@@ -74,6 +80,9 @@ JOBS: list[dict[str, Any]] = [
         "humanity_cost": (2, 5),
         "risk_level": "low",
         "description": "Safely escort a fixer through hostile gang territory.",
+        "failure_money_range": (50, 200),
+        "failure_hp_range": (3, 8),
+        "failure_hum_range": (2, 5),
     },
     {
         "id": "data_heist",
@@ -83,6 +92,9 @@ JOBS: list[dict[str, Any]] = [
         "humanity_cost": (3, 7),
         "risk_level": "medium",
         "description": "Break into a corporate data vault and extract encrypted files.",
+        "failure_money_range": (150, 500),
+        "failure_hp_range": (8, 20),
+        "failure_hum_range": (4, 10),
     },
     {
         "id": "gang_cleanup",
@@ -92,6 +104,9 @@ JOBS: list[dict[str, Any]] = [
         "humanity_cost": (5, 10),
         "risk_level": "medium",
         "description": "Clean up territory disputes between warring street gangs.",
+        "failure_money_range": (150, 500),
+        "failure_hp_range": (8, 20),
+        "failure_hum_range": (4, 10),
     },
     {
         "id": "black_market_sabotage",
@@ -101,6 +116,9 @@ JOBS: list[dict[str, Any]] = [
         "humanity_cost": (6, 14),
         "risk_level": "high",
         "description": "Destroy a rival dealer's shipment before it moves.",
+        "failure_money_range": (300, 800),
+        "failure_hp_range": (12, 30),
+        "failure_hum_range": (6, 15),
     },
     {
         "id": "corporate_espionage",
@@ -110,6 +128,9 @@ JOBS: list[dict[str, Any]] = [
         "humanity_cost": (8, 15),
         "risk_level": "high",
         "description": "Infiltrate a rival corp's R&D lab and steal schematics.",
+        "failure_money_range": (300, 800),
+        "failure_hp_range": (12, 30),
+        "failure_hum_range": (6, 15),
     },
     {
         "id": "cyberpsych_hunt",
@@ -119,5 +140,8 @@ JOBS: list[dict[str, Any]] = [
         "humanity_cost": (10, 20),
         "risk_level": "extreme",
         "description": "Track down and neutralize a rogue cyberpsycho before they hurt innocents.",
+        "failure_money_range": (500, 1200),
+        "failure_hp_range": (15, 40),
+        "failure_hum_range": (8, 20),
     },
 ]
