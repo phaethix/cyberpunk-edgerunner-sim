@@ -10,10 +10,11 @@ Usage::
     python -m server.main
     # → http://localhost:8000
 """
+import logging
 from contextlib import asynccontextmanager
 
 import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
@@ -22,12 +23,23 @@ from server.config.constants import WEB_DIR
 from server.models.game_state import GameState
 from server.utils.template_loader import load_html_template
 
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+logger = logging.getLogger("cyberpunk")
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Initialize game state on startup."""
+    logger.info("Initializing game state...")
     set_game_state(GameState())
+    logger.info("Server is ready — welcome to Night City, choom.")
     yield
+    logger.info("Server shutting down.")
 
 
 app = FastAPI(
@@ -35,6 +47,15 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+
+# Request logging middleware
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    """Log incoming requests and their status."""
+    response = await call_next(request)
+    logger.info("%s %s → %d", request.method, request.url.path, response.status_code)
+    return response
+
 
 # Static files
 app.mount("/static", StaticFiles(directory=str(WEB_DIR)), name="static")
@@ -50,6 +71,6 @@ def root() -> HTMLResponse:
 
 
 if __name__ == "__main__":
-    print("Starting Cyberpunk: Edge-Runner Simulator on http://0.0.0.0:8000")
-    print("Press Ctrl+C to stop.")
+    logger.info("Starting Cyberpunk: Edge-Runner Simulator on http://0.0.0.0:8000")
+    logger.info("Press Ctrl+C to stop.")
     uvicorn.run(app, host="0.0.0.0", port=8000)
