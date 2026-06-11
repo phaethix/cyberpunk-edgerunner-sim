@@ -6,7 +6,7 @@ import random
 import sys
 import time
 
-# ── Color constants (ANSI) ────────────────────────────────────────────
+# Color constants (ANSI)
 BOLD      = "\033[1m"
 DIM       = "\033[2m"
 UNDERLINE = "\033[4m"
@@ -19,7 +19,7 @@ MAGENTA   = "\033[35m"
 CYAN      = "\033[36m"
 WHITE     = "\033[37m"
 
-# ── Game data ─────────────────────────────────────────────────────────
+# Game data
 CYBERWARE = {
     "optic_zoom": {
         "name": "Optical Zoom Implants",
