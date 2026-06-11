@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """Tests for server.utils.helpers."""
 
-import pytest
-
 from server.utils.helpers import clamp, humanity_color_css
 
 
@@ -30,7 +28,7 @@ class TestClamp:
 class TestHumanityColorCss:
     """Tests for the humanity_color_css() function.
 
-    Returns CSS hex colours based on thresholds in HUMANITY_COLOR_ORDER:
+    Returns CSS hex colors based on thresholds in HUMANITY_COLOR_ORDER:
     - > 70  → #00ff88 (green)
     - > 40  → #fbbf24 (yellow)
     - <= 40 → #ff0044 (red)

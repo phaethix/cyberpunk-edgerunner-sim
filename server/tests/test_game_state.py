@@ -1,14 +1,9 @@
 #!/usr/bin/env python3
 """Tests for server.models.game_state.GameState."""
 
-from unittest.mock import patch
-
 import pytest
 
 from server.models.game_state import GameState
-
-
-# ── reset / status_dict ──────────────────────────────────────────────
 
 
 class TestReset:
@@ -59,7 +54,7 @@ class TestStatusDict:
 
     def test_colors_initial(self, fresh_game: GameState) -> None:
         d = fresh_game.status_dict()
-        assert d["humanity_color"] == "#00ff88"   # green hex
+        assert d["humanity_color"] == "#00ff88"  # green hex
         assert d["hp_color"] == "green"
 
     def test_hp_color_yellow(self, fresh_game: GameState) -> None:
@@ -75,8 +70,6 @@ class TestStatusDict:
         owned = fresh_game.status_dict()["owned"]
         assert owned == [{"id": "optic_zoom", "name": "Optical Zoom Implants"}]
 
-
-# ── buy ──────────────────────────────────────────────────────────────
 
 # Real values from server/config/data.py:
 #   optic_zoom:    price=800, combat_bonus=5
@@ -96,7 +89,7 @@ class TestBuy:
     def test_buy_success(self, fresh_game: GameState) -> None:
         result = fresh_game.buy("optic_zoom")
         assert result["success"] is True
-        assert fresh_game.money == 200             # 1000 - 800
+        assert fresh_game.money == 200  # 1000 - 800
         assert fresh_game.combat_bonus == 5
         assert ("optic_zoom", "Optical Zoom Implants") in fresh_game.owned
 
@@ -104,7 +97,7 @@ class TestBuy:
         result = fresh_game.buy("nonexistent")
         assert result["success"] is False
         assert "Unknown cyberware" in result["message"]
-        assert fresh_game.money == 1000            # unchanged
+        assert fresh_game.money == 1000  # unchanged
 
     def test_buy_already_owned(self, fresh_game: GameState) -> None:
         fresh_game.buy("optic_zoom")
@@ -135,10 +128,7 @@ class TestBuy:
         fresh_game.money = 10000
         fresh_game.buy("chrome_skull")
         # base_cost=13, cost=randint(11, 15)=11
-        assert fresh_game.humanity == 89.0         # 100 - 11
-
-
-# ── uninstall ────────────────────────────────────────────────────────
+        assert fresh_game.humanity == 89.0  # 100 - 11
 
 
 class TestUninstall:
@@ -172,8 +162,6 @@ class TestUninstall:
         fresh_game.uninstall("optic_zoom")
         assert fresh_game.humanity == 100.0  # capped
 
-
-# ── execute_job ──────────────────────────────────────────────────────
 
 # Real job IDs from data.py: courier_run, street_brawl, runner_escort,
 # data_heist, gang_cleanup, black_market_sabotage, corporate_espionage,
@@ -209,10 +197,11 @@ class TestExecuteJob:
             if a == 1 and b == 100:
                 return 100
             return a
+
         monkeypatch.setattr("server.models.game_state.random.randint",
                             custom_randint)
         result = fresh_game.execute_job("courier_run")
-        assert result["success"] is True          # action completed
+        assert result["success"] is True  # action completed
         assert "MISSION FAILED" in result["message"]
         assert "job_result" in result
         assert result["job_result"]["success"] is False
@@ -221,7 +210,7 @@ class TestExecuteJob:
         result = fresh_game.execute_job("courier_run")
         jr = result["job_result"]
         for key in ("success", "job_name", "roll", "effective_diff",
-                     "success_chance", "reward", "humanity_cost"):
+                    "success_chance", "reward", "humanity_cost"):
             assert key in jr, f"Missing key: {key}"
 
     def test_job_increases_day(self, fresh_game: GameState) -> None:
@@ -233,9 +222,6 @@ class TestExecuteJob:
         fresh_game.execute_job("courier_run")
         # humanity_cost=randint(1,3)=1
         assert fresh_game.humanity == before - 1
-
-
-# ── heal ─────────────────────────────────────────────────────────────
 
 
 class TestHeal:
@@ -272,9 +258,6 @@ class TestHeal:
         assert "already at full health" in result["message"]
 
 
-# ── rest ─────────────────────────────────────────────────────────────
-
-
 class TestRest:
     """Tests for GameState.rest()."""
 
@@ -304,9 +287,6 @@ class TestRest:
         result = fresh_game.rest()
         assert result["success"] is False
         assert "already at maximum" in result["message"]
-
-
-# ── game-over guard ──────────────────────────────────────────────────
 
 
 class TestGameOverGuard:
