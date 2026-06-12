@@ -15,6 +15,6 @@ jobs:
 
     - name: Push to Hugging Face
       env:
-        HF_REPO: "huggingface.co/spaces/cosmoli/cyberpunk-edgerunner-sim"
+        HF_REPO: "huggingface.co/spaces/phaethix/cyberpunk-edgerunner-sim"
       run: |
-        git push --force https://cosmoli:${{ secrets.HF_TOKEN }}@$HF_REPO main
+        git push --force https://phaethix:${{ secrets.HF_TOKEN }}@$HF_REPO main
