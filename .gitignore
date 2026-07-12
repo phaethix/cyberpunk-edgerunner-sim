@@ -1,6 +1,35 @@
+# Virtual environments
 .venv/
+venv/
+env/
+
+# Python caches
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*$py.class
 *.egg-info/
-.idea
+.eggs/
+
+# Testing / linting / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Environment / secrets
+.env
+.env.*
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
+
+# Distribution / build artifacts
+build/
+dist/
+*.egg
+
+# Hugging Face local CLI state
+.hf_cache/

@@ -4,7 +4,7 @@
 This module contains all Pydantic models used for API input validation
 and response serialization.
 """
-from typing import Optional, Union
+from typing import Optional
 
 from pydantic import BaseModel
 

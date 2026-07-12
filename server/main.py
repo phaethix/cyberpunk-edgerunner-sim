@@ -18,7 +18,8 @@ from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 
-from server.api.routes import router as api_router, set_game_state
+from server.api.routes import router as api_router
+from server.api.routes import set_game_state
 from server.config.constants import WEB_DIR
 from server.models.game_state import GameState
 from server.utils.template_loader import load_html_template
@@ -37,6 +38,9 @@ async def lifespan(app: FastAPI):
     """Initialize game state on startup."""
     logger.info("Initializing game state...")
     set_game_state(GameState())
+    # Render the SPA shell once at startup (game data is static) and cache it,
+    # so the "/" route doesn't re-read/re-serialize on every request.
+    app.state.index_html = load_html_template()
     logger.info("Server is ready — welcome to Night City, choom.")
     yield
     logger.info("Server shutting down.")
@@ -66,8 +70,8 @@ app.include_router(api_router)
 
 @app.get("/", response_class=HTMLResponse)
 def root() -> HTMLResponse:
-    """Serve the main SPA page with game data injected inline."""
-    return HTMLResponse(content=load_html_template())
+    """Serve the cached SPA page (rendered once at startup)."""
+    return HTMLResponse(content=app.state.index_html)
 
 
 if __name__ == "__main__":

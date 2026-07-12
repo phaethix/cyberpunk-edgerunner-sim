@@ -9,13 +9,37 @@ pinned: false
 
 # Cyberpunk: Edge-Runner Simulator
 
-A cyberpunk-themed single-player RPG, ported from a terminal text adventure to a web-based single-page application (SPA).
+[![CI](https://github.com/phaethix/cyberpunk-edgerunner-sim/actions/workflows/ci.yml/badge.svg)](https://github.com/phaethix/cyberpunk-edgerunner-sim/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/downloads/)
+[![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Space-blue)](https://huggingface.co/spaces/phaethix/cyberpunk-edgerunner-sim)
 
 > *Live fast. Modify everything. Don't lose yourself.*
 
+A cyberpunk-themed single-player RPG, ported from a terminal text adventure to a
+web-based single-page application (SPA).
+
+Play as an edge-runner in Night City (year 2089). Take gigs from the fixer, buy
+and install cyberware upgrades, manage your humanity and health — and watch out:
+lose it all and the chrome takes over.
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Key Mechanics](#key-mechanics)
+- [Architecture](#architecture)
+- [Tech Stack](#tech-stack)
+- [Installation](#installation)
+- [Development](#development)
+- [API Reference](#api-reference)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Overview
 
-Play as an edge-runner in Night City (year 2089). Take gigs from the fixer, buy and install cyberware upgrades, manage your humanity and health — and watch out: lose it all and the chrome takes over.
+Play as an edge-runner in Night City (year 2089). Take gigs from the fixer, buy
+and install cyberware upgrades, manage your humanity and health — and watch out:
+lose it all and the chrome takes over.
 
 ### Key Mechanics
 
@@ -29,11 +53,14 @@ Play as an edge-runner in Night City (year 2089). Take gigs from the fixer, buy 
 
 ### Gigs
 
-Eight gigs ranging from low-risk courier runs to extreme cyberpsycho hunts. Success chance = `clamp(15, 90, 50 + bonus*2 - difficulty//2)`. Failure costs money, humanity, and HP.
+Eight gigs ranging from low-risk courier runs to extreme cyberpsycho hunts.
+Success chance = `clamp(15, 90, 50 + bonus*2 - difficulty//2)`. Failure costs
+money, humanity, and HP.
 
 ### Cyberware
 
-Six installable upgrades, each with a price, combat bonus, and humanity cost. Uninstall any installed piece for a 50% refund.
+Six installable upgrades, each with a price, combat bonus, and humanity cost.
+Uninstall any installed piece for a 50% refund.
 
 ### Recovery
 
@@ -102,7 +129,7 @@ graph TD
 python3 -m venv .venv
 source .venv/bin/activate
 
-# Install dependencies
+# Install dependencies (includes pytest + ruff for development)
 pip install -r requirements.txt
 
 # Start the server
@@ -112,6 +139,23 @@ python -m server.main
 ### Access
 
 Open http://localhost:8000 in your browser.
+
+> The production image uses the slimmed-down `requirements-prod.txt` (no test
+> tooling). See [`Dockerfile`](Dockerfile) for details.
+
+## Development
+
+```bash
+# Run the test suite
+pytest
+
+# Check code style
+ruff check .
+```
+
+Please ensure both pass before opening a pull request. See
+[CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow, commit-message
+conventions, and branching strategy.
 
 ## API Reference
 
@@ -150,8 +194,15 @@ All endpoints return JSON with a consistent envelope:
 }
 ```
 
-For gigs, `job_result` contains: `success`, `job_name`, `roll`, `effective_diff`, `success_chance`, `risk_level`, plus either `reward` (on success) or `loss`/`hp_cost` (on failure).
+For gigs, `job_result` contains: `success`, `job_name`, `roll`, `effective_diff`,
+`success_chance`, `risk_level`, plus either `reward` (on success) or
+`loss`/`hp_cost` (on failure).
+
+## Contributing
+
+Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) and our
+[Code of Conduct](CODE_OF_CONDUCT.md) before opening an issue or pull request.
 
 ## License
 
-MIT
+Released under the [MIT License](LICENSE).

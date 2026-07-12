@@ -6,10 +6,9 @@ as inline JSON.
 """
 import json
 import re
-from pathlib import Path
 
 from ..config.constants import WEB_DIR
-from ..config.data import JOBS, CYBERWARE
+from ..config.data import CYBERWARE, JOBS
 
 
 def _replace_placeholder(html: str, name: str, value: str) -> str:
@@ -29,13 +28,13 @@ def load_html_template() -> str:
     """
     html_path = WEB_DIR / "index.html"
     html = html_path.read_text(encoding="utf-8")
-    
+
     # Convert game data to JSON
     jobs_json = json.dumps(JOBS)
     cw_json = json.dumps(CYBERWARE)
-    
+
     # Inject data into template
     html = _replace_placeholder(html, "JOBS_JSON", jobs_json)
     html = _replace_placeholder(html, "CW_JSON", cw_json)
-    
+
     return html

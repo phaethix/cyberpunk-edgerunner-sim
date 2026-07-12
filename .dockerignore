@@ -1,0 +1,16 @@
+.git
+.gitignore
+.pytest_cache
+__pycache__
+*.pyc
+*.pyo
+.venv
+venv
+.env
+.claude
+docs
+tests
+cyberpunk.py
+china_ecmo.py
+china_ecmo2.py
+marx.py
