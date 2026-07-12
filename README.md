@@ -11,7 +11,7 @@ pinned: false
 
 [![CI](https://github.com/phaethix/cyberpunk-edgerunner-sim/actions/workflows/ci.yml/badge.svg)](https://github.com/phaethix/cyberpunk-edgerunner-sim/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/python-3.9%2B-blue)](https://www.python.org/downloads/)
+[![Python](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
 [![Hugging Face Spaces](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Space-blue)](https://huggingface.co/spaces/phaethix/cyberpunk-edgerunner-sim)
 
 > *Live fast. Modify everything. Don't lose yourself.*
@@ -111,7 +111,7 @@ graph TD
 
 | Layer | Technology |
 |---|---|
-| Backend | Python 3.9+, FastAPI, Uvicorn |
+| Backend | Python 3.10+, FastAPI, Uvicorn |
 | Frontend | Vanilla JS (ES6+), Tailwind CSS (CDN) |
 | Style | Cyberpunk dark theme, glassmorphism, neon accents |
 | Data Transfer | JSON over HTTP (REST) |
@@ -120,7 +120,7 @@ graph TD
 
 ### Prerequisites
 
-- Python 3.9 or later
+- Python 3.10 or later
 
 ### Setup
 
